@@ -148,6 +148,36 @@ export function Header({ user }: HeaderProps) {
                     {link.label}
                   </Link>
                 ))}
+              {user && (
+                <div className="flex flex-col gap-2 pt-2 border-t border-purple-500/20 mt-2">
+                  <Link
+                    href="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-purple-400"
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    href="/settings"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-purple-400"
+                  >
+                    Settings
+                  </Link>
+                  <button
+                    onClick={async () => {
+                      setMobileMenuOpen(false);
+                      const { createClient } = await import("@/lib/supabase/client");
+                      const supabase = createClient();
+                      await supabase.auth.signOut();
+                      window.location.href = "/";
+                    }}
+                    className="px-4 py-2 text-sm font-medium text-red-400 hover:text-red-300 text-left"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
               {!user && (
                 <div className="flex flex-col gap-2 pt-2 border-t border-purple-500/20 mt-2">
                   <Link

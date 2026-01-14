@@ -27,10 +27,15 @@ export function UserNav({ user }: UserNavProps) {
 
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error signing out:", error);
+        toast.error("Failed to sign out");
+        return;
+      }
       toast.success("Signed out successfully");
-      router.push("/");
-      router.refresh();
+      // Force a hard refresh to clear any cached state
+      window.location.href = "/";
     } catch (error) {
       console.error("Error signing out:", error);
       toast.error("Failed to sign out");
@@ -49,10 +54,15 @@ export function UserNav({ user }: UserNavProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500/50">
-          <Avatar className="h-8 w-8 cursor-pointer">
+        <button 
+          className="flex items-center gap-2 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500/50 hover:opacity-80 transition-opacity"
+          aria-label="User menu"
+        >
+          <Avatar className="h-9 w-9 cursor-pointer border-2 border-purple-500/30 hover:border-purple-500/50 transition-colors">
             <AvatarImage src={user.avatar_url || undefined} alt={user.full_name || "User"} />
-            <AvatarFallback>{initials}</AvatarFallback>
+            <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white font-semibold">
+              {initials}
+            </AvatarFallback>
           </Avatar>
         </button>
       </DropdownMenuTrigger>
