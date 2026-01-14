@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Zap, Mail, Lock, Loader2, AlertTriangle } from "lucide-react";
@@ -16,6 +16,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/dashboard";
+  const errorParam = searchParams.get("error");
   const supabase = createClient();
   const isConfigured = isSupabaseConfigured();
 
@@ -23,6 +24,14 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+
+  // Clear session if there's an error (stale session from failed OAuth)
+  useEffect(() => {
+    if (errorParam) {
+      // Clear any stale session
+      supabase.auth.signOut().catch(console.error);
+    }
+  }, [errorParam, supabase]);
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,7 +66,9 @@ function LoginForm() {
       // Use NEXT_PUBLIC_APP_URL if available, otherwise use window.location.origin
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
       
-      const { error } = await supabase.auth.signInWithOAuth({
+      console.log("Starting Google OAuth with redirectTo:", `${appUrl}/auth/callback?redirect=${redirectTo}`);
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: `${appUrl}/auth/callback?redirect=${redirectTo}`,
@@ -65,8 +76,13 @@ function LoginForm() {
       });
 
       if (error) {
+        console.error("OAuth error:", error);
         toast.error(error.message);
         setGoogleLoading(false);
+      } else if (data?.url) {
+        // OAuth redirect should happen automatically, but log it for debugging
+        console.log("OAuth redirect URL:", data.url);
+        // The redirect should happen automatically via Supabase
       }
     } catch (error) {
       console.error("Google login error:", error);
@@ -89,6 +105,21 @@ function LoginForm() {
             </span>
           </Link>
         </div>
+
+        {errorParam && (
+          <div className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-3">
+            <AlertTriangle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+            <div className="text-sm">
+              <p className="font-medium text-red-500">Authentication Error</p>
+              <p className="text-muted-foreground mt-1">
+                {decodeURIComponent(errorParam)}
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">
+                Please try signing in again. If the problem persists, clear your browser cookies.
+              </p>
+            </div>
+          </div>
+        )}
 
         {!isConfigured && (
           <div className="mb-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg flex items-start gap-3">
