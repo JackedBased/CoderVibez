@@ -64,10 +64,13 @@ function SignupForm() {
     setGoogleLoading(true);
 
     try {
+      // Use NEXT_PUBLIC_APP_URL if available, otherwise use window.location.origin
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?redirect=/dashboard`,
+          redirectTo: `${appUrl}/auth/callback?redirect=/dashboard`,
         },
       });
 
