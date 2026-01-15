@@ -59,6 +59,7 @@ const tools = [
   { name: "Claude", projects: 520 },
   { name: "Lovable", projects: 210 },
   { name: "Replit Agent", projects: 175 },
+  { name: "Ideavo", projects: 180 },
 ];
 
 const testimonials = [

@@ -19,6 +19,7 @@ const tools = [
   { value: "claude", label: "Claude" },
   { value: "lovable", label: "Lovable" },
   { value: "replit-agent", label: "Replit Agent" },
+  { value: "ideavo", label: "Ideavo" },
 ];
 
 const categories = [

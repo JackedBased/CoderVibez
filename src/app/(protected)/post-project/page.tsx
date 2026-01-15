@@ -37,6 +37,7 @@ const tools = [
   "Claude",
   "Lovable",
   "Replit Agent",
+  "Ideavo",
   "ChatGPT",
   "Copilot",
   "Other",
