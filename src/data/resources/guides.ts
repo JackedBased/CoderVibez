@@ -49,156 +49,675 @@ export const guides: Guide[] = [
     description: "Master the art of working with AI coding tools. Learn how to prompt effectively, review generated code, and ship with confidence.",
     icon: Zap,
     category: "Best Practices",
-    readTime: "25 min read",
-    views: 5200,
+    readTime: "45 min read",
+    views: 12400,
     publishedAt: "2024-01-01",
     featured: true,
     externalLinks: [
       { title: "Cursor Documentation", url: "https://docs.cursor.com/", description: "Official Cursor AI docs" },
       { title: "Anthropic Prompt Engineering", url: "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering", description: "Claude prompting best practices" },
+      { title: "OpenAI Best Practices", url: "https://platform.openai.com/docs/guides/prompt-engineering", description: "Prompt engineering guide" },
+      { title: "Cursor Rules Examples", url: "https://cursor.directory/", description: "Community cursor rules" },
+      { title: "OWASP Top 10", url: "https://owasp.org/www-project-top-ten/", description: "Security vulnerabilities reference" },
     ],
     content: `
 # The Complete Guide to Vibe Coding Best Practices
 
-Vibe coding—using AI tools like Cursor, Claude, and v0 to rapidly build applications—has revolutionized how we ship software. But with great power comes the need for great practices. This guide covers everything you need to know to vibe code effectively.
+Vibe coding—using AI tools like Cursor, Claude, and v0 to rapidly build applications—has revolutionized how we ship software. But doing it poorly leads to technical debt, security vulnerabilities, and unmaintainable code. This comprehensive guide covers professional-level techniques for vibe coding effectively.
 
-## What is Vibe Coding?
-
-Vibe coding is the practice of using AI coding assistants to generate, modify, and debug code through natural language prompts. Instead of writing every line manually, you describe what you want and let the AI handle implementation details.
-
-### Popular Vibe Coding Tools
-
-- **Cursor** - AI-powered code editor built on VS Code
-- **Claude** - Anthropic's AI assistant, excellent for code generation
-- **v0** - Vercel's UI component generator
-- **GitHub Copilot** - AI pair programmer
-- **ChatGPT** - OpenAI's versatile assistant
-
-## The Vibe Coding Workflow
-
-### 1. Start with Clear Requirements
-
-Before prompting, know what you want to build:
-
-\`\`\`markdown
-# Good: Specific requirements
-"Create a React component that displays a user profile card with:
-- Avatar image (circular, 64px)
-- User name (bold, 18px)
-- Email (gray, smaller text)
-- Edit button that opens a modal
-- Loading skeleton state"
-
-# Bad: Vague requirements
-"Make a user profile thing"
-\`\`\`
-
-### 2. Iterate in Small Steps
-
-Don't try to generate an entire application at once:
-
-1. Generate the basic structure
-2. Add features incrementally
-3. Test each addition
-4. Refine and polish
-
-### 3. Review Every Generation
-
-AI code is a starting point, not the final product. Always review for:
-
-- **Correctness**: Does it do what you asked?
-- **Security**: Are there exposed secrets or vulnerabilities?
-- **Performance**: Are there obvious inefficiencies?
-- **Maintainability**: Can you understand and modify it?
-
-## Prompting Strategies
-
-### Be Specific About Tech Stack
-
-\`\`\`markdown
-# Good
-"Using Next.js 14 App Router with TypeScript, create an API route 
-that fetches user data from Supabase and returns it as JSON."
-
-# Bad
-"Create an API that gets users"
-\`\`\`
-
-### Provide Context
-
-Include relevant code, file structure, or constraints:
-
-\`\`\`markdown
-"Given this existing User type:
-\\\`\\\`\\\`typescript
-interface User {
-  id: string;
-  email: string;
-  name: string;
-}
-\\\`\\\`\\\`
-
-Create a function that validates user input before saving."
-\`\`\`
-
-### Ask for Explanations
-
-\`\`\`markdown
-"Create a debounce function and explain how it works 
-with comments in the code."
-\`\`\`
-
-## Common Pitfalls and How to Avoid Them
-
-### 1. Trusting Without Verifying
-
-**Problem**: Accepting AI-generated code without testing.
-
-**Solution**: Run the code immediately. Test edge cases. Check for errors.
-
-### 2. Prompt Drift
-
-**Problem**: Losing track of what you've asked for across multiple prompts.
-
-**Solution**: Summarize the current state before each new prompt.
-
-### 3. Over-Engineering
-
-**Problem**: AI tends to add complexity you don't need.
-
-**Solution**: Ask for the "simplest solution" or "minimal implementation."
-
-### 4. Ignoring Warnings
-
-**Problem**: Dismissing TypeScript errors or linter warnings.
-
-**Solution**: Fix all warnings before moving on. They often indicate real issues.
-
-## Quality Checklist
-
-Before shipping vibe-coded features, verify:
-
-- [ ] All TypeScript errors resolved
-- [ ] No hardcoded secrets or API keys
-- [ ] Error handling for all async operations
-- [ ] Loading states for data fetching
-- [ ] Mobile responsiveness tested
-- [ ] Accessibility basics (keyboard nav, ARIA labels)
-- [ ] Edge cases handled (empty states, errors)
-
-## When to Get Human Help
-
-Vibe coding has limits. Consider getting expert help when:
-
-- Security is critical (auth, payments)
-- Performance optimization is needed
-- Complex business logic is involved
-- You've been stuck for hours
-- The code "works" but you don't understand why
+> **Research Note**: Studies show that while AI-generated code is often functionally correct, only ~10.5% of solutions pass security benchmarks. This guide addresses that gap.
 
 ---
 
-*That's where CoderVibez comes in. [Post your project](/post-project) and get help from developers who specialize in polishing AI-generated code.*
+## Part 1: Understanding Vibe Coding
+
+### What Sets Professional Vibe Coding Apart
+
+Professional vibe coding isn't just about generating code faster—it's about:
+
+| Amateur Approach | Professional Approach |
+|-----------------|----------------------|
+| Accept AI output as-is | Review, test, and refine every generation |
+| Vague, one-shot prompts | Structured, iterative prompt chains |
+| Fix bugs reactively | Prevent bugs through context and constraints |
+| Skip documentation | Maintain living documentation for AI context |
+| Trust blindly | Verify with tests, types, and security audits |
+
+### The Vibe Coding Stack
+
+Modern vibe coding typically involves:
+
+- **Cursor** - AI-native code editor with composer and chat modes
+- **Claude** - Anthropic's AI, excellent for complex reasoning
+- **v0** - Vercel's UI component generator (shadcn/ui + Tailwind)
+- **GitHub Copilot** - Inline code completion
+- **ChatGPT / GPT-4** - General-purpose coding assistant
+
+Each tool has strengths. Cursor excels at codebase-aware edits. Claude handles complex multi-file refactors. v0 generates polished UI components. Use them in combination.
+
+---
+
+## Part 2: Project Architecture First
+
+Before writing a single prompt, establish your project foundation.
+
+### Define Your Tech Stack Constraints
+
+Create a project specification document that AI can reference:
+
+\`\`\`markdown
+# Project: CoderVibez
+## Tech Stack
+- Framework: Next.js 14 (App Router)
+- Language: TypeScript (strict mode)
+- Styling: Tailwind CSS + shadcn/ui
+- Database: Supabase (PostgreSQL)
+- Auth: Supabase Auth
+- Blockchain: Solana (web3.js)
+
+## Architecture Rules
+- Use Server Components by default
+- Client Components only for interactivity
+- All data fetching in server components or API routes
+- Zod for all input validation
+- Never expose service role keys to client
+
+## Naming Conventions
+- Components: PascalCase (UserCard.tsx)
+- Utilities: camelCase (formatDate.ts)
+- Constants: SCREAMING_SNAKE_CASE
+- Database tables: snake_case
+\`\`\`
+
+### Use Cursor Rules Files
+
+Create a \`.cursorrules\` file in your project root. This configures AI behavior project-wide:
+
+\`\`\`markdown
+# .cursorrules
+
+You are an expert Next.js 14 developer using TypeScript and Tailwind CSS.
+
+## Code Style
+- Use functional components with hooks
+- Prefer const over let, never use var
+- Use async/await over .then() chains
+- Always handle errors explicitly
+- Add JSDoc comments for public functions
+
+## Architecture
+- Server Components by default
+- 'use client' only when necessary (hooks, events, browser APIs)
+- Colocate related files (component + test + types)
+- Use @/ path aliases for imports
+
+## Security
+- Never hardcode secrets or API keys
+- Always validate user input with Zod
+- Use parameterized queries, never string concatenation
+- Enable RLS on all Supabase tables
+
+## What NOT to do
+- Don't use any type - use unknown if truly unknown
+- Don't skip error handling
+- Don't use deprecated React patterns (componentWillMount, etc.)
+- Don't install new dependencies without explicit approval
+\`\`\`
+
+### Establish Data Models Early
+
+Define your entities and relationships before generating code:
+
+\`\`\`typescript
+// types/database.ts - Define before coding
+interface User {
+  id: string;
+  email: string;
+  role: 'vibe_coder' | 'developer' | 'both';
+  created_at: string;
+}
+
+interface Project {
+  id: string;
+  owner_id: string; // FK to User
+  title: string;
+  status: 'open' | 'in_progress' | 'completed';
+  bounty_amount: number;
+}
+
+interface Bid {
+  id: string;
+  project_id: string; // FK to Project
+  developer_id: string; // FK to User
+  amount: number;
+  status: 'pending' | 'accepted' | 'rejected';
+}
+\`\`\`
+
+---
+
+## Part 3: Advanced Prompting Techniques
+
+### The Context Layering Pattern
+
+Professional prompts have multiple layers of context:
+
+\`\`\`markdown
+## Layer 1: Project Context
+"This is a Next.js 14 App Router project using TypeScript, 
+Tailwind CSS, and Supabase for the backend."
+
+## Layer 2: Current State
+"The project currently has:
+- User authentication working via Supabase
+- A /dashboard page that shows user's projects
+- Types defined in src/types/database.ts"
+
+## Layer 3: Specific Task
+"Create a new component ProjectCard that displays:
+- Project title and description
+- Bounty amount in SOL
+- Status badge (color-coded)
+- 'View Details' button"
+
+## Layer 4: Constraints
+"Requirements:
+- Use existing Card component from @/components/ui/card
+- Match styling of existing UserCard component
+- Include loading skeleton state
+- Add hover animation"
+\`\`\`
+
+### The "Study First" Pattern
+
+Before generating new code, ask AI to study existing code:
+
+\`\`\`markdown
+"Before creating the new component, study:
+1. src/components/ui/card.tsx - the Card component we'll use
+2. src/components/dashboard/user-card.tsx - for styling reference
+3. src/types/database.ts - for the Project type definition
+
+Then create ProjectCard.tsx that follows the same patterns."
+\`\`\`
+
+This produces code that matches your existing codebase style.
+
+### Prompt Chaining for Complex Features
+
+Break large features into sequential steps:
+
+\`\`\`markdown
+# Step 1: Data Layer
+"Create the Supabase query function to fetch projects 
+with their bid counts. Use the existing supabase client pattern."
+
+# Step 2: Type Definitions  
+"Based on what the query returns, create/update TypeScript 
+types for ProjectWithBids."
+
+# Step 3: Server Component
+"Create a Server Component that fetches projects using 
+the function from step 1."
+
+# Step 4: Client Interactivity
+"Add a Client Component wrapper that handles the 
+filter/sort UI controls."
+
+# Step 5: Error & Loading States
+"Add proper error boundaries, loading skeletons, 
+and empty state handling."
+
+# Step 6: Tests
+"Write tests for the query function and component 
+rendering with mock data."
+\`\`\`
+
+### Negative Constraints (What NOT to Do)
+
+Explicitly state what to avoid:
+
+\`\`\`markdown
+"Create an authentication flow.
+
+DO NOT:
+- Use localStorage for tokens (use httpOnly cookies)
+- Skip email validation
+- Allow weak passwords (require 8+ chars, mixed case, numbers)
+- Expose any Supabase service role keys
+- Use any deprecated Supabase auth methods
+- Add any new npm dependencies"
+\`\`\`
+
+### The Self-Critique Pattern
+
+After generating code, ask for a review:
+
+\`\`\`markdown
+"Review the code you just generated for:
+1. Security vulnerabilities (XSS, injection, CSRF)
+2. Performance issues (N+1 queries, unnecessary rerenders)
+3. Accessibility gaps (ARIA labels, keyboard navigation)
+4. Error handling gaps (what if the API fails?)
+5. Edge cases (empty data, very long strings, special characters)
+
+List any issues found and provide fixes."
+\`\`\`
+
+---
+
+## Part 4: Security-First Vibe Coding
+
+AI-generated code often has security gaps. Build security into your workflow.
+
+### The Security Audit Checklist
+
+Run this checklist on every AI-generated feature:
+
+#### Authentication & Authorization
+\`\`\`markdown
+[ ] All protected routes verify authentication
+[ ] Users can only access their own data
+[ ] Admin functions check admin role
+[ ] Session tokens use httpOnly, secure cookies
+[ ] Password requirements enforced
+[ ] Rate limiting on auth endpoints
+\`\`\`
+
+#### Input Validation
+\`\`\`markdown
+[ ] All user input validated with Zod/Yup
+[ ] Validation on both client AND server
+[ ] File uploads check type, size, content
+[ ] SQL queries use parameterization (no string concat)
+[ ] No eval() or dangerouslySetInnerHTML with user data
+\`\`\`
+
+#### Data Protection
+\`\`\`markdown
+[ ] RLS enabled on all Supabase tables
+[ ] Sensitive data not in client bundle
+[ ] API keys in environment variables only
+[ ] No secrets in git history
+[ ] HTTPS enforced
+\`\`\`
+
+### Secure Code Patterns
+
+#### Input Validation Pattern
+\`\`\`typescript
+// Always validate with Zod before processing
+import { z } from 'zod';
+
+const createProjectSchema = z.object({
+  title: z.string().min(1).max(200),
+  description: z.string().max(5000),
+  bounty: z.number().positive().max(1000),
+  // Never allow role/permissions in user input!
+});
+
+export async function createProject(input: unknown) {
+  // Validate input - throws if invalid
+  const validated = createProjectSchema.parse(input);
+  
+  // Now safe to use
+  const { data, error } = await supabase
+    .from('projects')
+    .insert(validated);
+}
+\`\`\`
+
+#### API Route Security Pattern
+\`\`\`typescript
+// Complete secure API route
+export async function POST(request: Request) {
+  try {
+    // 1. Authenticate
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // 2. Parse & Validate Input
+    const body = await request.json();
+    const validated = createProjectSchema.parse(body);
+
+    // 3. Authorize (business logic check)
+    const canCreate = await checkUserCanCreateProject(user.id);
+    if (!canCreate) {
+      return Response.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    // 4. Execute
+    const { data, error } = await supabase
+      .from('projects')
+      .insert({ ...validated, owner_id: user.id })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return Response.json(data);
+
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return Response.json({ error: error.errors }, { status: 400 });
+    }
+    console.error('API error:', error);
+    return Response.json({ error: 'Internal error' }, { status: 500 });
+  }
+}
+\`\`\`
+
+---
+
+## Part 5: Testing AI-Generated Code
+
+AI doesn't run the code it generates. You must verify everything.
+
+### The Testing Pyramid for Vibe Code
+
+\`\`\`
+        /\\
+       /  \\      E2E Tests (Playwright)
+      /----\\     - Critical user journeys
+     /      \\    - Auth flows, payments
+    /--------\\   
+   /          \\  Integration Tests
+  /------------\\ - API routes, DB queries
+ /              \\ - Component interactions
+/----------------\\
+      Unit Tests (Vitest)
+      - Utility functions
+      - Validation logic
+      - Pure components
+\`\`\`
+
+### Test Patterns for AI Code
+
+#### Test the Happy Path AND Edge Cases
+\`\`\`typescript
+describe('formatBounty', () => {
+  // Happy path
+  it('formats positive amounts', () => {
+    expect(formatBounty(1.5)).toBe('1.50 SOL');
+  });
+
+  // Edge cases AI often misses
+  it('handles zero', () => {
+    expect(formatBounty(0)).toBe('0.00 SOL');
+  });
+
+  it('handles very small amounts', () => {
+    expect(formatBounty(0.001)).toBe('0.00 SOL');
+  });
+
+  it('handles very large amounts', () => {
+    expect(formatBounty(1000000)).toBe('1,000,000.00 SOL');
+  });
+
+  it('handles negative (should throw)', () => {
+    expect(() => formatBounty(-5)).toThrow();
+  });
+
+  it('handles NaN', () => {
+    expect(() => formatBounty(NaN)).toThrow();
+  });
+});
+\`\`\`
+
+#### Golden Tests for Regressions
+Create snapshot tests that catch unintended changes:
+
+\`\`\`typescript
+// Capture expected output, fail if it changes
+it('renders project card correctly', () => {
+  const { container } = render(
+    <ProjectCard project={mockProject} />
+  );
+  expect(container).toMatchSnapshot();
+});
+\`\`\`
+
+---
+
+## Part 6: Performance Optimization
+
+AI code often works but isn't optimized. Here's what to watch for.
+
+### React Performance Patterns
+
+#### Avoid Unnecessary Re-renders
+\`\`\`typescript
+// Bad: Object created every render
+<ProjectList filters={{ status: 'open' }} />
+
+// Good: Stable reference
+const filters = useMemo(() => ({ status: 'open' }), []);
+<ProjectList filters={filters} />
+\`\`\`
+
+#### Use Server Components
+\`\`\`typescript
+// Bad: Client component fetching data
+'use client';
+function ProjectList() {
+  const [projects, setProjects] = useState([]);
+  useEffect(() => {
+    fetch('/api/projects').then(r => r.json()).then(setProjects);
+  }, []);
+  return <div>{/* render */}</div>;
+}
+
+// Good: Server component - no client JS needed
+async function ProjectList() {
+  const projects = await getProjects(); // Direct DB call
+  return <div>{/* render */}</div>;
+}
+\`\`\`
+
+#### Virtualize Long Lists
+\`\`\`typescript
+// Bad: Render 1000 items
+{projects.map(p => <ProjectCard key={p.id} project={p} />)}
+
+// Good: Only render visible items
+import { useVirtualizer } from '@tanstack/react-virtual';
+
+function VirtualizedList({ projects }) {
+  const virtualizer = useVirtualizer({
+    count: projects.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 100,
+  });
+  // Only renders ~10-20 items regardless of list size
+}
+\`\`\`
+
+### Database Performance
+
+#### Avoid N+1 Queries
+\`\`\`typescript
+// Bad: N+1 query
+const projects = await supabase.from('projects').select('*');
+for (const project of projects) {
+  const owner = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', project.owner_id)
+    .single();
+}
+
+// Good: Single query with join
+const { data } = await supabase
+  .from('projects')
+  .select(\`
+    *,
+    owner:users(id, name, avatar_url)
+  \`);
+\`\`\`
+
+---
+
+## Part 7: Version Control & Collaboration
+
+### Commit Strategy for AI Code
+
+\`\`\`bash
+# Bad: Giant commits
+git commit -m "Add project feature"
+
+# Good: Small, atomic commits
+git commit -m "Add Project type definition"
+git commit -m "Add getProjects query function"
+git commit -m "Add ProjectCard component"
+git commit -m "Add ProjectList with loading state"
+git commit -m "Add tests for project components"
+\`\`\`
+
+### Document AI Decisions
+
+Keep a log of significant AI interactions:
+
+\`\`\`markdown
+# decisions/2024-01-15-auth-flow.md
+
+## Context
+Needed to implement Google OAuth with Supabase.
+
+## AI Tools Used
+- Cursor Composer for initial implementation
+- Claude for debugging redirect issues
+
+## Key Decisions
+- Used @supabase/ssr for server-side auth
+- Chose PKCE flow over implicit
+- Added custom callback handler for user profile creation
+
+## Issues Encountered
+- AI initially used deprecated getSession() - fixed to getUser()
+- Missing RLS policies on users table - added manually
+
+## Testing Done
+- Manual testing of full OAuth flow
+- Tested error cases (cancelled auth, expired tokens)
+\`\`\`
+
+---
+
+## Part 8: Debugging AI-Generated Code
+
+### The Structured Debugging Workflow
+
+When AI code breaks:
+
+\`\`\`markdown
+1. IDENTIFY: What's the exact error message/behavior?
+2. ISOLATE: What's the smallest reproduction case?
+3. ANALYZE: Read the code - what SHOULD happen vs what DOES happen?
+4. HYPOTHESIZE: What could cause this difference?
+5. TEST: Verify hypothesis with console.log, debugger, or tests
+6. FIX: Make minimal change to fix the issue
+7. VERIFY: Ensure fix works and doesn't break other things
+8. DOCUMENT: Note what went wrong for future reference
+\`\`\`
+
+### Common AI Code Bugs
+
+| Bug Type | Example | Fix |
+|----------|---------|-----|
+| Stale closure | useEffect with missing deps | Add all deps or use refs |
+| Type mismatch | Assuming API returns array | Add null checks, validate |
+| Race condition | Multiple rapid state updates | Use useReducer or debounce |
+| Memory leak | Missing cleanup in useEffect | Return cleanup function |
+| Hydration error | Server/client render mismatch | Use dynamic import or useEffect |
+
+---
+
+## Part 9: When to Get Human Help
+
+Vibe coding has limits. Get expert help when:
+
+### Security-Critical Features
+- Authentication and authorization
+- Payment processing
+- Handling sensitive user data
+- Compliance requirements (GDPR, HIPAA)
+
+### Performance-Critical Code
+- Database query optimization
+- Real-time features at scale
+- Complex caching strategies
+
+### Complex Business Logic
+- Financial calculations
+- Multi-step workflows
+- Integrations with legacy systems
+
+### You've Been Stuck
+- Same bug for 2+ hours
+- AI keeps generating wrong solutions
+- Code works but you don't understand why
+
+---
+
+## Professional Vibe Coder's Checklist
+
+Before shipping any AI-generated feature:
+
+### Architecture
+- [ ] Follows established project patterns
+- [ ] Types are complete and accurate
+- [ ] No unnecessary dependencies added
+
+### Security
+- [ ] Input validation on all user data
+- [ ] Authentication checks on protected routes
+- [ ] No secrets in code or client bundle
+- [ ] RLS policies in place
+
+### Quality
+- [ ] All TypeScript errors resolved
+- [ ] Linter passing with no warnings
+- [ ] Tests written for critical paths
+- [ ] Error handling complete
+
+### Performance
+- [ ] No N+1 queries
+- [ ] Large lists virtualized
+- [ ] Images optimized
+- [ ] Bundle size reasonable
+
+### UX
+- [ ] Loading states implemented
+- [ ] Error states handled gracefully
+- [ ] Empty states designed
+- [ ] Mobile responsive
+
+### Accessibility
+- [ ] Keyboard navigation works
+- [ ] ARIA labels present
+- [ ] Color contrast sufficient
+- [ ] Screen reader tested
+
+---
+
+## Conclusion
+
+Vibe coding is a powerful skill, but it requires discipline. The best vibe coders:
+
+1. **Invest in context** - Cursor rules, documentation, type definitions
+2. **Prompt strategically** - Layered context, chained prompts, constraints
+3. **Verify everything** - Tests, security audits, performance checks
+4. **Commit frequently** - Small changes, clear history, easy rollbacks
+5. **Know their limits** - Get help when security or complexity demands it
+
+Master these practices, and you'll ship faster AND with higher quality than most developers—vibe coding or not.
+
+---
+
+*Need help with a specific vibe-coded project? [Post it on CoderVibez](/post-project) and get expert assistance from developers who specialize in polishing AI-generated code.*
     `,
   },
   {
