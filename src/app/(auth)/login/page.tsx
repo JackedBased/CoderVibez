@@ -96,12 +96,12 @@ function LoginForm() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <Link href="/">
-            <div className="border border-gray-700/50 px-4 py-2 inline-flex items-center">
-              <span className="text-xl font-normal bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+          <Link href="/" className="transition-opacity hover:opacity-80">
+            <div className="inline-flex items-center">
+              <span className="text-2xl font-semibold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
                 Coder
               </span>
-              <span className="text-xl font-normal text-gray-300 ml-1">
+              <span className="text-2xl font-semibold text-muted-foreground ml-1.5">
                 Vibez&gt;
               </span>
             </div>

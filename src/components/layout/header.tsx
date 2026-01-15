@@ -35,12 +35,12 @@ export function Header({ user }: HeaderProps) {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="group">
-            <div className="border border-gray-700/50 px-3 py-1.5 inline-flex items-center">
-              <span className="text-base font-normal bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+          <Link href="/" className="group transition-opacity hover:opacity-80">
+            <div className="inline-flex items-center">
+              <span className="text-lg font-semibold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
                 Coder
               </span>
-              <span className="text-base font-normal text-gray-300 ml-1">
+              <span className="text-lg font-semibold text-muted-foreground ml-1.5">
                 Vibez&gt;
               </span>
             </div>
