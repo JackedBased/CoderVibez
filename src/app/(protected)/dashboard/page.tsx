@@ -19,7 +19,7 @@ import { formatRelativeTime, getToolColor } from "@/lib/utils";
 import type { Project, Bid } from "@/types/database";
 
 // Extended types for dashboard queries
-type ProjectWithBidCount = Project & { bids: { count: number }[] };
+type ProjectWithBidCount = Project & { bids: { id: string }[] };
 type BidWithProject = Bid & { project: Project };
 
 export default async function DashboardPage() {
@@ -32,10 +32,10 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  // Fetch user's projects
+  // Fetch user's projects with bids (just IDs for counting)
   const { data: projectsData } = await supabase
     .from("projects")
-    .select("*, bids(count)")
+    .select("*, bids(id)")
     .eq("owner_id", user.id)
     .order("created_at", { ascending: false });
   
@@ -194,7 +194,7 @@ export default async function DashboardPage() {
                         </div>
                         <div className="text-center">
                           <p className="text-2xl font-bold">
-                            {project.bids?.[0]?.count || 0}
+                            {project.bids?.length || 0}
                           </p>
                           <p className="text-xs text-muted-foreground">Bids</p>
                         </div>

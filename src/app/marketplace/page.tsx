@@ -9,9 +9,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { createClient } from "@/lib/supabase/client";
 import type { ProjectWithOwner } from "@/types/database";
 
+// Extended type for projects with bid counts
+type ProjectWithBidCount = ProjectWithOwner & {
+  bids?: { id: string }[];
+};
+
 export default function MarketplacePage() {
   const supabase = createClient();
-  const [projects, setProjects] = useState<ProjectWithOwner[]>([]);
+  const [projects, setProjects] = useState<ProjectWithBidCount[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Filter state
@@ -43,14 +48,15 @@ export default function MarketplacePage() {
   const fetchProjects = async () => {
     setLoading(true);
     try {
+      // Fetch projects with owner and bids (just IDs for counting)
       const { data, error } = await supabase
         .from("projects")
-        .select("*, owner:users(*), bids(count)")
+        .select("*, owner:users(*), bids(id)")
         .eq("status", "open")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setProjects((data as unknown as ProjectWithOwner[]) || []);
+      setProjects((data as unknown as ProjectWithBidCount[]) || []);
     } catch (error) {
       console.error("Error fetching projects:", error);
     } finally {
@@ -174,9 +180,7 @@ export default function MarketplacePage() {
             <ProjectCard
               key={project.id}
               project={project}
-              bidCount={
-                (project as any).bids?.[0]?.count || 0
-              }
+              bidCount={project.bids?.length || 0}
             />
           ))}
         </div>

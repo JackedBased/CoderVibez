@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { createClient } from "@/lib/supabase/server";
 
 const features = [
   {
@@ -43,23 +44,29 @@ const features = [
   },
 ];
 
-const categories = [
-  { name: "React Bugs", count: 234, color: "from-cyan-500 to-blue-500" },
-  { name: "Supabase Issues", count: 156, color: "from-green-500 to-emerald-500" },
-  { name: "AI Hallucinations", count: 189, color: "from-red-500 to-pink-500" },
-  { name: "UI/UX Fixes", count: 312, color: "from-purple-500 to-violet-500" },
-  { name: "Full-Stack Debug", count: 145, color: "from-orange-500 to-amber-500" },
-  { name: "Mobile Tweaks", count: 98, color: "from-indigo-500 to-blue-500" },
+// Category mapping from database value to display
+const categoryConfig = [
+  { value: "react-bugs", label: "React Bugs", color: "from-cyan-500 to-blue-500" },
+  { value: "supabase-issues", label: "Supabase Issues", color: "from-green-500 to-emerald-500" },
+  { value: "ai-hallucination", label: "AI Hallucination Fixes", color: "from-red-500 to-pink-500" },
+  { value: "ui-fixes", label: "UI/UX Fixes", color: "from-purple-500 to-violet-500" },
+  { value: "full-stack", label: "Full Stack Debug", color: "from-orange-500 to-amber-500" },
+  { value: "mobile-tweaks", label: "Mobile Tweaks", color: "from-indigo-500 to-blue-500" },
+  { value: "other", label: "Other", color: "from-gray-500 to-slate-500" },
 ];
 
-const tools = [
-  { name: "Cursor", projects: 450 },
-  { name: "v0", projects: 380 },
-  { name: "Bolt", projects: 290 },
-  { name: "Claude", projects: 520 },
-  { name: "Lovable", projects: 210 },
-  { name: "Replit Agent", projects: 175 },
-  { name: "Ideavo", projects: 180 },
+// Tools to track (matching post-project form)
+const toolsToTrack = [
+  "Cursor",
+  "v0",
+  "Bolt",
+  "Claude",
+  "Lovable",
+  "Replit Agent",
+  "Ideavo",
+  "ChatGPT",
+  "Copilot",
+  "Other",
 ];
 
 const testimonials = [
@@ -93,7 +100,62 @@ const stats = [
   { value: "< 24h", label: "Avg. Fix Time" },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient();
+
+  // Fetch all open projects to calculate metrics
+  const { data: projects } = await supabase
+    .from("projects")
+    .select("tools_used, category")
+    .eq("status", "open"); // Only count open projects
+
+  // Calculate tool counts (tools_used is an array)
+  const toolCounts: Record<string, number> = {};
+  toolsToTrack.forEach((tool) => {
+    toolCounts[tool] = 0;
+  });
+
+  projects?.forEach((project) => {
+    if (project.tools_used && Array.isArray(project.tools_used)) {
+      project.tools_used.forEach((tool: string) => {
+        if (toolCounts.hasOwnProperty(tool)) {
+          toolCounts[tool]++;
+        }
+      });
+    }
+  });
+
+  // Create tools array with counts, sorted by count descending
+  const tools = toolsToTrack
+    .map((name) => ({
+      name,
+      projects: toolCounts[name] || 0,
+    }))
+    .filter((tool) => tool.projects > 0) // Only show tools with projects
+    .sort((a, b) => b.projects - a.projects);
+
+  // Calculate category counts
+  const categoryCounts: Record<string, number> = {};
+  categoryConfig.forEach((cat) => {
+    categoryCounts[cat.value] = 0;
+  });
+
+  projects?.forEach((project) => {
+    if (project.category && categoryCounts.hasOwnProperty(project.category)) {
+      categoryCounts[project.category]++;
+    }
+  });
+
+  // Create categories array with counts
+  const categories = categoryConfig
+    .map((cat) => ({
+      name: cat.label,
+      value: cat.value,
+      count: categoryCounts[cat.value] || 0,
+      color: cat.color,
+    }))
+    .filter((cat) => cat.count > 0) // Only show categories with projects
+    .sort((a, b) => b.count - a.count); // Sort by count descending
   return (
     <div className="relative">
       {/* Hero Section */}
@@ -248,83 +310,85 @@ export default function HomePage() {
       </section>
 
       {/* Categories */}
-      <section className="py-20 border-t border-purple-500/20">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-2">
-                Popular <span className="text-gradient">Categories</span>
-              </h2>
-              <p className="text-muted-foreground">
-                Browse projects by the type of fix needed
-              </p>
+      {categories.length > 0 && (
+        <section className="py-20 border-t border-purple-500/20">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-2">
+                  Popular <span className="text-gradient">Categories</span>
+                </h2>
+                <p className="text-muted-foreground">
+                  Browse projects by the type of fix needed
+                </p>
+              </div>
+              <Button variant="outline" asChild>
+                <Link href="/marketplace">View All Categories</Link>
+              </Button>
             </div>
-            <Button variant="outline" asChild>
-              <Link href="/marketplace">View All Categories</Link>
-            </Button>
-          </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map((category) => (
-              <Link key={category.name} href={`/marketplace?category=${category.name.toLowerCase().replace(' ', '-')}`}>
-                <Card
-                  glow
-                  className="h-full hover:scale-105 transition-transform cursor-pointer"
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {categories.map((category) => (
+                <Link
+                  key={category.value}
+                  href={`/marketplace?category=${category.value}`}
                 >
-                  <CardContent className="p-4 text-center">
-                    <div
-                      className={`w-12 h-12 mx-auto mb-3 rounded-lg bg-gradient-to-br ${category.color} flex items-center justify-center`}
-                    >
-                      <Code className="h-6 w-6 text-white" />
-                    </div>
-                    <h3 className="font-medium text-sm mb-1">{category.name}</h3>
-                    <p className="text-xs text-muted-foreground">
-                      {category.count} projects
-                    </p>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+                  <Card
+                    glow
+                    className="h-full hover:scale-105 transition-transform cursor-pointer"
+                  >
+                    <CardContent className="p-4 text-center">
+                      <div
+                        className={`w-12 h-12 mx-auto mb-3 rounded-lg bg-gradient-to-br ${category.color} flex items-center justify-center`}
+                      >
+                        <Code className="h-6 w-6 text-white" />
+                      </div>
+                      <h3 className="font-medium text-sm mb-1">{category.name}</h3>
+                      <p className="text-xs text-muted-foreground">
+                        {category.count} project{category.count !== 1 ? "s" : ""}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Tools Section */}
-      <section className="py-20 border-t border-purple-500/20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Tools We <span className="text-gradient">Support</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              No matter which AI coding tool you used, our developers can help fix
-              the output.
-            </p>
-          </div>
+      {tools.length > 0 && (
+        <section className="py-20 border-t border-purple-500/20">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Tools We <span className="text-gradient">Support</span>
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                No matter which AI coding tool you used, our developers can help fix
+                the output.
+              </p>
+            </div>
 
-          <div className="flex flex-wrap justify-center gap-4">
-            {tools.map((tool) => (
-              <Card
-                key={tool.name}
-                glow
-                className="px-6 py-4 hover:scale-105 transition-transform"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
-                    <Zap className="h-5 w-5 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-semibold">{tool.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {tool.projects} projects
+            <div className="flex flex-wrap justify-center gap-4">
+              {tools.map((tool) => (
+                <Card
+                  key={tool.name}
+                  glow
+                  className="px-6 py-4 hover:scale-105 transition-transform"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+                      <Zap className="h-5 w-5 text-white" />
                     </div>
+                    <div className="font-semibold">{tool.name}</div>
                   </div>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Testimonials */}
       <section className="py-20 border-t border-purple-500/20">
