@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Zap } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -35,16 +35,15 @@ export function Header({ user }: HeaderProps) {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
-              <div className="relative bg-gradient-to-r from-purple-600 to-blue-600 p-2 rounded-lg">
-                <Zap className="h-5 w-5 text-white" />
-              </div>
+          <Link href="/" className="group">
+            <div className="border border-gray-700/50 px-3 py-1.5 inline-flex items-center">
+              <span className="text-base font-normal bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+                Coder
+              </span>
+              <span className="text-base font-normal text-gray-300 ml-1">
+                Vibez&gt;
+              </span>
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-              CoderVibez
-            </span>
           </Link>
 
           {/* Desktop Navigation */}

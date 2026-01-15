@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Zap, Mail, Lock, User, Loader2, AlertTriangle } from "lucide-react";
+import { Mail, Lock, User, Loader2, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -90,13 +90,15 @@ function SignupForm() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-2 rounded-lg">
-              <Zap className="h-6 w-6 text-white" />
+          <Link href="/">
+            <div className="border border-gray-700/50 px-4 py-2 inline-flex items-center">
+              <span className="text-xl font-normal bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+                Coder
+              </span>
+              <span className="text-xl font-normal text-gray-300 ml-1">
+                Vibez&gt;
+              </span>
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-              CoderVibez
-            </span>
           </Link>
         </div>
 
