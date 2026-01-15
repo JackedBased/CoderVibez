@@ -112,9 +112,9 @@ export default function HomePage() {
             </Badge>
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              <span className="text-gradient">A Marketplace to bridge the gap</span>
+              <span className="text-gradient">Bringing Vibe Coders</span>
               <br />
-              <span className="text-white">between Vibe Coders and Developers</span>
+              <span className="text-white">and Developers together</span>
             </h1>
 
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">

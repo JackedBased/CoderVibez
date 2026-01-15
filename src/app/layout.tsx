@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CoderVibez - Bridge Vibe Coders & Real Devs",
+  title: "CoderVibez - Bringing Vibe Coders and Developers together",
   description:
     "Marketplace connecting vibe coders with experienced developers. Fix AI-generated bugs fast with SOL bounties.",
   keywords: [
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     "Claude",
   ],
   openGraph: {
-    title: "CoderVibez - Bridge Vibe Coders & Real Devs",
+    title: "CoderVibez - Bringing Vibe Coders and Developers together",
     description:
       "Marketplace connecting vibe coders with experienced developers. Fix AI-generated bugs fast with SOL bounties.",
     type: "website",
