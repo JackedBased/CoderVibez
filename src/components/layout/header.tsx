@@ -7,7 +7,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { WalletButton } from "@/components/wallet/wallet-button";
-import { UserNav } from "@/components/layout/user-nav";
+import { AuthCheck } from "@/components/layout/auth-check";
 import type { User } from "@/types/database";
 
 interface HeaderProps {
@@ -83,19 +83,7 @@ export function Header({ user }: HeaderProps) {
           {/* Right side actions */}
           <div className="flex items-center gap-3">
             <WalletButton />
-            
-            {user ? (
-              <UserNav user={user} />
-            ) : (
-              <div className="hidden md:flex items-center gap-2">
-                <Button variant="ghost" asChild>
-                  <Link href="/login">Log in</Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/signup">Get Started</Link>
-                </Button>
-              </div>
-            )}
+            <AuthCheck serverUser={user} />
 
             {/* Mobile menu button */}
             <Button

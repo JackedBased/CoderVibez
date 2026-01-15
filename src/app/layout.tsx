@@ -51,15 +51,37 @@ export default async function RootLayout({
       const supabase = await createClient();
       const {
         data: { user: authUser },
+        error: authError,
       } = await supabase.auth.getUser();
 
+      if (authError) {
+        console.error("Auth error in layout:", authError);
+      }
+
       if (authUser) {
-        const { data } = await supabase
+        // Try to get user profile from database
+        const { data: profileData, error: profileError } = await supabase
           .from("users")
           .select("*")
           .eq("id", authUser.id)
           .single();
-        user = data;
+
+        if (profileError) {
+          console.error("Error fetching user profile:", profileError);
+          // If profile doesn't exist, create a minimal user object from auth data
+          // This ensures the UI still shows the user as logged in
+          user = {
+            id: authUser.id,
+            email: authUser.email || "",
+            full_name: authUser.user_metadata?.full_name || authUser.user_metadata?.name || null,
+            avatar_url: authUser.user_metadata?.avatar_url || authUser.user_metadata?.picture || null,
+            role: "both" as const,
+            created_at: authUser.created_at,
+            updated_at: authUser.updated_at || authUser.created_at,
+          } as any;
+        } else {
+          user = profileData;
+        }
       }
     } catch (error) {
       console.error("Error fetching user:", error);
