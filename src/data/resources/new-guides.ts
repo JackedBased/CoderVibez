@@ -3,6 +3,7 @@ import {
   TestTube,
   Rocket,
   Shield,
+  Megaphone,
   type LucideIcon,
 } from "lucide-react";
 import type { Guide } from "./guides";
