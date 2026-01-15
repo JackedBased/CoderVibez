@@ -86,9 +86,9 @@ const testimonials = [
 ];
 
 const stats = [
-  { value: "2,500+", label: "Projects Fixed" },
-  { value: "850+", label: "Active Developers" },
-  { value: "₿ 1,200+", label: "SOL Paid Out" },
+  { value: "20", label: "Projects Fixed" },
+  { value: "9", label: "Active Developers" },
+  { value: "◎ 9", label: "SOL Paid Out" },
   { value: "< 24h", label: "Avg. Fix Time" },
 ];
 
@@ -112,9 +112,9 @@ export default function HomePage() {
             </Badge>
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-              <span className="text-gradient">Bridge Vibe Coders</span>
+              <span className="text-gradient">A Marketplace to bridge the gap</span>
               <br />
-              <span className="text-white">& Real Devs</span>
+              <span className="text-white">between Vibe Coders and Developers</span>
             </h1>
 
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
