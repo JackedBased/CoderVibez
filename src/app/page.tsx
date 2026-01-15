@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { createClient } from "@/lib/supabase/server";
+import type { Project } from "@/types/database";
 
 const features = [
   {
@@ -115,7 +116,7 @@ export default async function HomePage() {
     toolCounts[tool] = 0;
   });
 
-  projects?.forEach((project) => {
+  (projects as Pick<Project, "tools_used" | "category">[] | null)?.forEach((project) => {
     if (project.tools_used && Array.isArray(project.tools_used)) {
       project.tools_used.forEach((tool: string) => {
         if (toolCounts.hasOwnProperty(tool)) {
@@ -140,7 +141,7 @@ export default async function HomePage() {
     categoryCounts[cat.value] = 0;
   });
 
-  projects?.forEach((project) => {
+  (projects as Pick<Project, "tools_used" | "category">[] | null)?.forEach((project) => {
     if (project.category && categoryCounts.hasOwnProperty(project.category)) {
       categoryCounts[project.category]++;
     }
