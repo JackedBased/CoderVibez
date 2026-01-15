@@ -35,6 +35,14 @@ export const metadata: Metadata = {
     description:
       "Marketplace connecting vibe coders with experienced developers. Fix AI-generated bugs fast with SOL bounties.",
     type: "website",
+    url: "https://codervibez.onrender.com",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CoderVibez - Bringing Vibe Coders and Developers together",
+    description:
+      "Marketplace connecting vibe coders with experienced developers. Fix AI-generated bugs fast with SOL bounties.",
+    creator: "@codervibez",
   },
 };
 

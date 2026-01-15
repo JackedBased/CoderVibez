@@ -2,6 +2,11 @@
   "name": "codervibez",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JackedBased/CoderVibez.git"
+  },
+  "homepage": "https://codervibez.onrender.com",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Zap, Github, Twitter } from "lucide-react";
+import { Github, Twitter } from "lucide-react";
 
 const footerLinks = {
   product: [
@@ -27,12 +27,12 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-2 rounded-lg">
-                <Zap className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                CoderVibez
+            <Link href="/" className="inline-flex items-center mb-4">
+              <span className="text-xl font-semibold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+                Coder
+              </span>
+              <span className="text-xl font-semibold text-muted-foreground ml-1.5">
+                Vibez&gt;
               </span>
             </Link>
             <p className="text-sm text-muted-foreground mb-4">
@@ -40,18 +40,20 @@ export function Footer() {
             </p>
             <div className="flex gap-4">
               <a
-                href="https://twitter.com"
+                href="https://x.com/codervibez"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-purple-400 transition-colors"
+                aria-label="Follow us on X (Twitter)"
               >
                 <Twitter className="h-5 w-5" />
               </a>
               <a
-                href="https://github.com"
+                href="https://github.com/JackedBased/CoderVibez"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-purple-400 transition-colors"
+                aria-label="View on GitHub"
               >
                 <Github className="h-5 w-5" />
               </a>

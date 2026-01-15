@@ -39,8 +39,8 @@ CoderVibez is a marketplace that connects vibe coders (people building apps with
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/codervibez.git
-   cd codervibez
+   git clone https://github.com/JackedBased/CoderVibez.git
+   cd CoderVibez
    ```
 
 2. **Install dependencies**
@@ -137,7 +137,7 @@ For development, use Devnet SOL (free from faucets).
    git init
    git add .
    git commit -m "Initial commit"
-   git remote add origin https://github.com/yourusername/codervibez.git
+   git remote add origin https://github.com/JackedBased/CoderVibez.git
    git push -u origin main
    ```
 
