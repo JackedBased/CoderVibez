@@ -52,36 +52,20 @@ export function ProjectActions({
     setCompleting(true);
 
     try {
-      // In a production app, this would trigger the escrow release
-      // For MVP, we just update the database status
+      const response = await fetch("/api/escrow/release", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId }),
+      });
 
-      // Get the accepted bid to find the developer
-      const { data: bidData, error: bidError } = await supabase
-        .from("bids")
-        .select("*, bidder:users(*)")
-        .eq("id", acceptedBidId)
-        .single();
+      const data = await response.json();
 
-      if (bidError || !bidData) {
-        throw new Error("Could not find accepted bid");
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to release escrow");
       }
-      
-      const bid = bidData as any;
-
-      // Update project status
-      const { error: projectError } = await (supabase
-        .from("projects") as any)
-        .update({
-          status: "completed",
-          // In production, you'd store the release transaction signature here
-          // completion_tx_signature: signature,
-        })
-        .eq("id", projectId);
-
-      if (projectError) throw projectError;
 
       toast.success(
-        `Project completed! Payment released to ${bid.bidder?.full_name || "developer"}.`
+        `Project completed! Payment released. Transaction: ${data.signature.slice(0, 8)}...`
       );
       setShowCompleteDialog(false);
       router.refresh();
@@ -97,16 +81,21 @@ export function ProjectActions({
     setCancelling(true);
 
     try {
-      // In production, this would refund the escrow to the project owner
-      
-      const { error } = await (supabase
-        .from("projects") as any)
-        .update({ status: "cancelled" })
-        .eq("id", projectId);
+      const response = await fetch("/api/escrow/refund", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId }),
+      });
 
-      if (error) throw error;
+      const data = await response.json();
 
-      toast.success("Project cancelled. Escrow will be refunded.");
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to refund escrow");
+      }
+
+      toast.success(
+        `Project cancelled. Escrow refunded. Transaction: ${data.signature.slice(0, 8)}...`
+      );
       setShowCancelDialog(false);
       router.refresh();
     } catch (error: any) {

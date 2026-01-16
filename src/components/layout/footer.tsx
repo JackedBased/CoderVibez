@@ -112,16 +112,35 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-purple-500/20 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} CoderVibez. All rights reserved.
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Built with{" "}
-            <span className="text-purple-400">Next.js</span>,{" "}
-            <span className="text-green-400">Supabase</span>, &{" "}
-            <span className="text-cyan-400">Solana</span>
-          </p>
+        <div className="border-t border-purple-500/20 mt-8 pt-8 space-y-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} CoderVibez. All rights reserved.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Built with{" "}
+              <span className="text-purple-400">Next.js</span>,{" "}
+              <span className="text-green-400">Supabase</span>, &{" "}
+              <span className="text-cyan-400">Solana</span>
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <a
+              href="https://orynth.dev/projects/coder-vibez"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-opacity hover:opacity-80"
+              aria-label="Featured on Orynth"
+            >
+              <img
+                src="https://orynth.dev/api/badge/coder-vibez?theme=dark&style=default"
+                alt="Featured on Orynth"
+                width="260"
+                height="80"
+                className="h-20 w-auto"
+              />
+            </a>
+          </div>
         </div>
       </div>
     </footer>
